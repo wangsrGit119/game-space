@@ -1,0 +1,31 @@
+# macOS 系统产物
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows 系统产物
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# 依赖与构建产物(本项目为纯静态,预留)
+node_modules/
+dist/
+build/
+
+# 日志与临时文件
+*.log
+*.tmp
