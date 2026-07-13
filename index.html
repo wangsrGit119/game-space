@@ -3,435 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>游戏集合 - 60个精彩小游戏</title>
+    <title>GAME SPACE ▸ 街机厅 · 60 款开源小游戏</title>
     <link rel="icon" href="./favicon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Silkscreen:wght@400;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root{
+            --bg:#0a0b12;
+            --bg2:#05060b;
+            --panel:#101220;
+            --panel2:#171a2c;
+            --ink:#ecebfa;
+            --dim:#726f95;
+            --line:rgba(150,158,255,.10);
+            --magenta:#ff2e88;
+            --cyan:#22e3ff;
+            --amber:#ffcf4a;
+            --lime:#9dff5b;
+            --grid:rgba(120,132,255,.055);
+            --neon:'Monoton', cursive;
+            --pixel:'Silkscreen','Courier New',monospace;
+            --cjk:'ZCOOL QingKe HuangYou','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
         }
 
-        body {
-            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
+        *{margin:0;padding:0;box-sizing:border-box;}
+
+        html{scroll-behavior:smooth;}
+
+        body{
+            font-family:var(--cjk);
+            background:var(--bg2);
+            color:var(--ink);
+            min-height:100vh;
+            overflow-x:hidden;
+            position:relative;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
+        /* ── CRT 氛围层 ──────────────────────────────── */
+        .fx{position:fixed;inset:0;pointer-events:none;}
+
+        .fx-base{
+            z-index:0;
+            background:
+                radial-gradient(120% 90% at 50% -10%, #171a33 0%, var(--bg) 40%, var(--bg2) 100%);
+        }
+        .fx-grid{
+            z-index:1;
+            background-image:
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size:46px 46px;
+            -webkit-mask-image:radial-gradient(circle at 50% 26%, #000 55%, transparent 100%);
+                    mask-image:radial-gradient(circle at 50% 26%, #000 55%, transparent 100%);
+        }
+        .fx-scan{
+            z-index:60;
+            background:repeating-linear-gradient(to bottom,
+                rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px,
+                rgba(0,0,0,.16) 3px, rgba(0,0,0,.16) 3px);
+            background-size:100% 4px;
+            opacity:.55;
+            animation:scandrift 7s linear infinite;
+        }
+        @keyframes scandrift{from{background-position:0 0;}to{background-position:0 400px;}}
+        .fx-grain{
+            z-index:62;
+            opacity:.05;
+            mix-blend-mode:overlay;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .fx-vig{
+            z-index:64;
+            background:radial-gradient(130% 100% at 50% 40%, transparent 55%, rgba(0,0,0,.55) 100%);
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
+        /* CRT 开机自检:亮线 → 展开 → 消隐,只跑一次 */
+        .crt-boot{
+            position:fixed;inset:0;z-index:200;pointer-events:none;
+            background:#eafcff;transform-origin:center;
+            animation:crtboot 1s .05s ease forwards;
+        }
+        @keyframes crtboot{
+            0%{opacity:1;transform:scaleY(.003);filter:brightness(3);}
+            14%{opacity:1;transform:scaleY(.003);filter:brightness(3);}
+            42%{opacity:1;transform:scaleY(1);background:#05060b;}
+            100%{opacity:0;transform:scaleY(1);visibility:hidden;}
         }
 
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        /* ── 布局 ──────────────────────────────────── */
+        .screen{
+            position:relative;z-index:5;
+            max-width:1240px;margin:0 auto;
+            padding:clamp(28px,5vw,64px) clamp(16px,4vw,40px) 0;
+            animation:screenin .7s .48s both ease;
+        }
+        @keyframes screenin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+        /* ── 招牌 ──────────────────────────────────── */
+        .marquee{text-align:center;margin-bottom:clamp(30px,5vw,54px);}
+        .coin{
+            font-family:var(--pixel);font-size:.62rem;letter-spacing:.28em;
+            color:var(--amber);margin-bottom:22px;
+            text-shadow:0 0 12px rgba(255,207,74,.6);
+        }
+        .brand{
+            font-family:var(--neon);
+            font-size:clamp(2.9rem,11vw,7rem);
+            line-height:.86;letter-spacing:.015em;
+            color:#fff;
+            animation:flicker 7s infinite;
+        }
+        .brand .w1{
+            color:#fff;
+            text-shadow:0 0 7px #fff,0 0 18px var(--magenta),0 0 42px var(--magenta),0 0 78px rgba(255,46,136,.6);
+        }
+        .brand .w2{
+            color:#fff;
+            text-shadow:0 0 7px #fff,0 0 18px var(--cyan),0 0 42px var(--cyan),0 0 78px rgba(34,227,255,.6);
+        }
+        @keyframes flicker{
+            0%,17%,19%,55%,57%,100%{opacity:1;}
+            18%,56%{opacity:.62;}
+            92%,94%{opacity:.75;}
+        }
+        .sub{
+            font-family:var(--cjk);
+            font-size:clamp(1rem,2.4vw,1.35rem);
+            color:var(--ink);opacity:.82;letter-spacing:.12em;
+            margin-top:20px;
+        }
+        .hud{
+            display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;
+            margin-top:24px;
+            font-family:var(--pixel);font-size:.58rem;letter-spacing:.14em;color:var(--dim);
+        }
+        .hud b{color:var(--amber);font-weight:400;}
+        .blink{animation:blink 1.15s steps(1) infinite;}
+        @keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:.12;}}
+
+        /* ── 控制台:搜索 + 分类 ─────────────────────── */
+        .console{
+            display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+            margin-bottom:30px;
+        }
+        .search{
+            flex:1 1 280px;min-width:0;
+            display:flex;align-items:center;gap:12px;
+            background:rgba(150,158,255,.045);
+            border:1px solid var(--line);
+            border-radius:12px;padding:0 16px;
+            transition:border-color .25s, box-shadow .25s;
+        }
+        .search:focus-within{
+            border-color:color-mix(in srgb, var(--lime) 55%, transparent);
+            box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 30%,transparent),0 0 26px -8px var(--lime);
+        }
+        .search .prompt{font-family:var(--pixel);font-size:.66rem;color:var(--lime);white-space:nowrap;}
+        .search input{
+            flex:1;background:transparent;border:0;outline:0;color:var(--ink);
+            font-family:var(--cjk);font-size:1.05rem;letter-spacing:.03em;
+            padding:14px 0;caret-color:var(--lime);min-width:0;
+        }
+        .search input::placeholder{color:var(--dim);}
+        .search .hits{font-family:var(--pixel);font-size:.62rem;color:var(--dim);white-space:nowrap;}
+        .search .hits b{color:var(--cyan);font-weight:400;}
+
+        .chips{display:flex;flex-wrap:wrap;gap:9px;}
+        .chip{
+            font-family:var(--cjk);font-size:.9rem;letter-spacing:.04em;
+            color:var(--dim);background:rgba(150,158,255,.04);
+            border:1px solid var(--line);border-radius:999px;
+            padding:9px 16px;cursor:pointer;transition:.2s;white-space:nowrap;
+        }
+        .chip small{font-family:var(--pixel);font-size:.52rem;opacity:.7;margin-left:5px;}
+        .chip:hover{color:var(--ink);border-color:color-mix(in srgb,var(--cyan) 45%,transparent);transform:translateY(-1px);}
+        .chip.on{
+            color:#05060b;background:var(--cyan);border-color:var(--cyan);
+            box-shadow:0 0 20px -5px var(--cyan);
+        }
+        .chip.on small{opacity:.85;}
+
+        /* ── 卡带货架 ──────────────────────────────── */
+        .rack{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+            gap:15px;
+            perspective:1300px;
+            padding-bottom:56px;
+        }
+        .cab{
+            position:relative;display:flex;flex-direction:column;justify-content:flex-end;
+            aspect-ratio:1/1;padding:14px;
+            text-decoration:none;color:inherit;
+            background:linear-gradient(158deg, var(--panel2), var(--panel));
+            border:1px solid var(--line);border-radius:15px;overflow:hidden;
+            transform-style:preserve-3d;
+            transition:transform .22s ease, box-shadow .25s, border-color .25s;
+            animation:pop .5s both cubic-bezier(.2,.85,.25,1);
+        }
+        @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.95);}to{opacity:1;transform:none;}}
+
+        /* 顶部霓虹条,每台机器一种色 */
+        .cab::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;z-index:3;
+            background:var(--a);opacity:.55;box-shadow:0 0 14px var(--a);
+            transition:opacity .25s;
+        }
+        /* hover 扫光 */
+        .cab::after{
+            content:'';position:absolute;inset:0;pointer-events:none;z-index:4;
+            background:linear-gradient(115deg,transparent 40%,color-mix(in srgb,var(--a) 22%,transparent) 50%,transparent 60%);
+            transform:translateX(-120%);transition:transform .6s ease;
+        }
+        .cab:hover{
+            border-color:color-mix(in srgb,var(--a) 55%,transparent);
+            box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 34px -10px var(--a);
+        }
+        .cab:hover::before{opacity:1;}
+        .cab:hover::after{transform:translateX(120%);}
+
+        /* 封面缩略图:游戏自带 icon-256 做全出血封面 */
+        .cab-art{
+            position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+            background:linear-gradient(158deg,var(--panel2),var(--panel));
+        }
+        .cab-art img{
+            width:100%;height:100%;object-fit:cover;object-position:center;display:block;
+            filter:saturate(1.05) brightness(.84) contrast(1.02);
+            transition:transform .55s ease, filter .3s;
+        }
+        .cab:hover .cab-art img{transform:scale(1.07);filter:saturate(1.2) brightness(1.03) contrast(1.03);}
+        .cab-scrim{
+            position:absolute;inset:0;z-index:1;pointer-events:none;
+            background:linear-gradient(to top,
+                rgba(5,6,11,.97) 6%, rgba(5,6,11,.72) 32%,
+                rgba(5,6,11,.18) 62%, rgba(5,6,11,0) 100%);
         }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        /* 占位图游戏:回退到首字大字卡 */
+        .cab-glyph{
+            display:none;position:absolute;right:-8px;bottom:-20px;z-index:1;
+            font-family:var(--cjk);font-size:8.2rem;line-height:1;
+            color:var(--a);opacity:.16;pointer-events:none;
+            text-shadow:0 0 34px var(--a);
+            transition:opacity .3s, transform .4s ease;
+        }
+        .cab.no-art .cab-glyph{display:block;}
+        .cab.no-art .cab-art img{display:none;}
+        .cab:hover .cab-glyph{opacity:.32;transform:scale(1.09) rotate(-3deg);}
+
+        .cab-rank{
+            position:absolute;top:12px;left:12px;z-index:2;
+            font-family:var(--pixel);font-size:.68rem;color:var(--a);letter-spacing:.02em;
+            background:rgba(5,6,11,.55);padding:4px 7px;border-radius:6px;
+            text-shadow:0 0 8px rgba(0,0,0,.6);
+        }
+        .cab-cat{
+            position:absolute;top:12px;right:12px;z-index:2;
+            font-family:var(--cjk);font-size:.72rem;color:var(--ink);
+            border:1px solid var(--line);border-radius:6px;padding:3px 8px;
+            background:rgba(5,6,11,.6);
+        }
+        .cab-name{
+            position:relative;z-index:2;
+            font-family:var(--cjk);font-size:1.28rem;line-height:1.12;
+            letter-spacing:.02em;color:var(--ink);
+            text-shadow:0 2px 6px rgba(0,0,0,.9),0 1px 16px rgba(0,0,0,.7);
+        }
+        .cab-play{
+            position:relative;z-index:2;margin-top:8px;
+            font-family:var(--pixel);font-size:.55rem;letter-spacing:.1em;color:var(--a);
+            opacity:0;transform:translateY(7px);transition:.25s;
+            text-shadow:0 0 10px rgba(0,0,0,.8);
+        }
+        .cab:hover .cab-play{opacity:1;transform:none;}
+        .cab:focus-visible{outline:2px solid var(--lime);outline-offset:3px;}
+
+        /* ── GAME OVER 空态 ──────────────────────────── */
+        .noresult{
+            text-align:center;padding:70px 20px 90px;
+        }
+        .noresult .big{
+            font-family:var(--pixel);font-size:clamp(1.6rem,6vw,3rem);color:var(--magenta);
+            text-shadow:0 0 24px var(--magenta);animation:blink 1.1s steps(1) infinite;
+        }
+        .noresult .small{font-family:var(--cjk);font-size:1.1rem;color:var(--dim);margin-top:18px;letter-spacing:.1em;}
+
+        /* ── 页脚跑马灯 ──────────────────────────────── */
+        .ticker{
+            position:relative;z-index:5;margin-top:10px;
+            border-top:1px solid var(--line);
+            background:linear-gradient(0deg,rgba(5,6,11,.9),transparent);
+            overflow:hidden;padding:16px 0;
+        }
+        .ticker .track{
+            display:inline-flex;white-space:nowrap;
+            font-family:var(--pixel);font-size:.62rem;letter-spacing:.16em;color:var(--dim);
+            animation:tick 26s linear infinite;
+        }
+        .ticker .track span{padding:0 26px;}
+        .ticker .track b{color:var(--amber);font-weight:400;}
+        .ticker:hover .track{animation-play-state:paused;}
+        @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+        .credit{
+            position:relative;z-index:5;text-align:center;
+            padding:22px 20px 40px;
+            font-family:var(--cjk);font-size:.88rem;color:var(--dim);letter-spacing:.08em;
+        }
+        .credit a{color:var(--cyan);text-decoration:none;border-bottom:1px dashed color-mix(in srgb,var(--cyan) 40%,transparent);}
+        .credit a:hover{color:var(--lime);border-color:var(--lime);}
+
+        /* ── 秘籍提示 ──────────────────────────────── */
+        .toast{
+            position:fixed;left:50%;bottom:42px;z-index:150;
+            transform:translateX(-50%) translateY(24px);opacity:0;pointer-events:none;
+            font-family:var(--pixel);font-size:.7rem;letter-spacing:.14em;color:#05060b;
+            background:var(--amber);padding:14px 24px;border-radius:10px;
+            box-shadow:0 0 40px -6px var(--amber);
+            transition:transform .3s, opacity .3s;
+        }
+        .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+        /* Konami turbo 模式:整个货架霓虹轮转 */
+        .turbo .rack{animation:rainbow 5s linear infinite;}
+        .turbo .fx-scan{animation-duration:2.4s;}
+        @keyframes rainbow{from{filter:hue-rotate(0deg);}to{filter:hue-rotate(360deg);}}
+
+        @media (max-width:560px){
+            .rack{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;}
+            .cab{padding:12px;}
+            .cab-name{font-size:1.1rem;}
+            .cab-glyph{font-size:6.2rem;}
         }
 
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 40px;
-        }
-
-        .game-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .game-card a {
-            text-decoration: none;
-            color: #333;
-            display: block;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .game-card:hover a {
-            color: #667eea;
-        }
-
-        .game-number {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-right: 10px;
-            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .footer {
-            background: #f8f9fa;
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            border-top: 1px solid #eee;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .games-grid {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
+        @media (prefers-reduced-motion: reduce){
+            *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+            .fx-scan,.crt-boot{display:none;}
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎮 游戏集合</h1>
-            <p>60个精彩小游戏，总有一款适合您</p>
-        </div>
+    <div class="fx fx-base" aria-hidden="true"></div>
+    <div class="fx fx-grid" aria-hidden="true"></div>
+    <div class="fx fx-scan" aria-hidden="true"></div>
+    <div class="fx fx-grain" aria-hidden="true"></div>
+    <div class="fx fx-vig" aria-hidden="true"></div>
+    <div class="crt-boot" aria-hidden="true"></div>
 
-        <div class="games-grid">
-            <div class="game-card">
-                <a href="./1-僵尸鸭猎手/index.html" target="_blank">
-                    <span class="game-number">1</span>僵尸鸭猎手
-                </a>
+    <main class="screen">
+        <header class="marquee">
+            <div class="coin blink">◉ INSERT COIN TO CONTINUE</div>
+            <h1 class="brand"><span class="w1">GAME</span> <span class="w2">SPACE</span></h1>
+            <p class="sub">街机厅 · 精选 60 款开源 H5 小游戏</p>
+            <div class="hud">
+                <span>▸ <b id="cnt">60</b> / 60 GAMES</span>
+                <span>▸ PLAYER ONE READY</span>
+                <span class="blink">▸ PRESS ▲▲▼▼◄►◄► B A</span>
             </div>
-            <div class="game-card">
-                <a href="./2-斯瓦特大战僵尸/index.html" target="_blank">
-                    <span class="game-number">2</span>斯瓦特大战僵尸
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./3-坦克大战/index.html" target="_blank">
-                    <span class="game-number">3</span>坦克大战
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./4-木乃伊糖果/index.html" target="_blank">
-                    <span class="game-number">4</span>木乃伊糖果
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./5-万圣节记忆/index.html" target="_blank">
-                    <span class="game-number">5</span>万圣节记忆
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./6-毁灭僵尸/index.html" target="_blank">
-                    <span class="game-number">6</span>毁灭僵尸
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./7-粘猴手机游戏/index.html" target="_blank">
-                    <span class="game-number">7</span>粘猴手机游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./8-水暖工/index.html" target="_blank">
-                    <span class="game-number">8</span>水暖工
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./9-黄金矿工/index.html" target="_blank">
-                    <span class="game-number">9</span>黄金矿工
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./10-逃亡/index.html" target="_blank">
-                    <span class="game-number">10</span>逃亡
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./11-水果馅饼/index.html" target="_blank">
-                    <span class="game-number">11</span>水果馅饼
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./12-砌砖/index.html" target="_blank">
-                    <span class="game-number">12</span>砌砖
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./13-流浪者大战僵尸/index.html" target="_blank">
-                    <span class="game-number">13</span>流浪者大战僵尸
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./14-万圣节泡泡枪手/index.html" target="_blank">
-                    <span class="game-number">14</span>万圣节泡泡枪手
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./15-忍者冒险小游戏/index.html" target="_blank">
-                    <span class="game-number">15</span>忍者冒险小游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./16-赌场卡记忆/index.html" target="_blank">
-                    <span class="game-number">16</span>赌场卡记忆
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./17-吃水果的蛇/index.html" target="_blank">
-                    <span class="game-number">17</span>吃水果的蛇
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./18-坦克防御兵/index.html" target="_blank">
-                    <span class="game-number">18</span>坦克防御兵
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./19-捕鱼狂/index.html" target="_blank">
-                    <span class="game-number">19</span>捕鱼狂
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./20-疯狂跑步者/index.html" target="_blank">
-                    <span class="game-number">20</span>疯狂跑步者
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./21-航天飞机/index.html" target="_blank">
-                    <span class="game-number">21</span>航天飞机
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./22-超级牛仔跑/index.html" target="_blank">
-                    <span class="game-number">22</span>超级牛仔跑
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./23-猎鸭者/index.html" target="_blank">
-                    <span class="game-number">23</span>猎鸭者
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./24-交通赛车/index.html" target="_blank">
-                    <span class="game-number">24</span>交通赛车
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./25-女孩打扮/index.html" target="_blank">
-                    <span class="game-number">25</span>女孩打扮
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./26-烛光超线/index.html" target="_blank">
-                    <span class="game-number">26</span>烛光超线
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./27-果冻3/index.html" target="_blank">
-                    <span class="game-number">27</span>果冻3
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./28-射击强盗/index.html" target="_blank">
-                    <span class="game-number">28</span>射击强盗
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./29-僵尸枪手/index.html" target="_blank">
-                    <span class="game-number">29</span>僵尸枪手
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./30-圣诞熊猫跑步/index.html" target="_blank">
-                    <span class="game-number">30</span>圣诞熊猫跑步
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./31-速度赛车/index.html" target="_blank">
-                    <span class="game-number">31</span>速度赛车
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./32-圣诞比赛/index.html" target="_blank">
-                    <span class="game-number">32</span>圣诞比赛
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./33-圣诞气球/index.html" target="_blank">
-                    <span class="game-number">33</span>圣诞气球
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./34-儿童真彩色/index.html" target="_blank">
-                    <span class="game-number">34</span>儿童真彩色
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./35-空战/index.html" target="_blank">
-                    <span class="game-number">35</span>空战
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./36-狂鲨任务/index.html" target="_blank">
-                    <span class="game-number">36</span>狂鲨任务
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./37-棍兵/index.html" target="_blank">
-                    <span class="game-number">37</span>棍兵
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./38-泡泡教授/index.html" target="_blank">
-                    <span class="game-number">38</span>泡泡教授
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./39-忍者游戏/index.html" target="_blank">
-                    <span class="game-number">39</span>忍者游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./40-糖果比赛3/index.html" target="_blank">
-                    <span class="game-number">40</span>糖果比赛3
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./41-超彩色线/index.html" target="_blank">
-                    <span class="game-number">41</span>超彩色线
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./42-触球/index.html" target="_blank">
-                    <span class="game-number">42</span>触球
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./43-快骰子/index.html" target="_blank">
-                    <span class="game-number">43</span>快骰子
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./44-气球天堂/index.html" target="_blank">
-                    <span class="game-number">44</span>气球天堂
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./45-热珠宝/index.html" target="_blank">
-                    <span class="game-number">45</span>热珠宝
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./46-笑脸微笑小游戏/index.html" target="_blank">
-                    <span class="game-number">46</span>笑脸微笑小游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./47-儿童数学游戏/index.html" target="_blank">
-                    <span class="game-number">47</span>儿童数学游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./48-僵尸起义/index.html" target="_blank">
-                    <span class="game-number">48</span>僵尸起义
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./49-超级目标/index.html" target="_blank">
-                    <span class="game-number">49</span>超级目标
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./50-超级跑车拼图/index.html" target="_blank">
-                    <span class="game-number">50</span>超级跑车拼图
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./51-儿童纵横填字游戏/index.html" target="_blank">
-                    <span class="game-number">51</span>儿童纵横填字游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./52-希塔洛契卡/index.html" target="_blank">
-                    <span class="game-number">52</span>希塔洛契卡
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./53-汽车物理学/index.html" target="_blank">
-                    <span class="game-number">53</span>汽车物理学
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./54-机器人X/index.html" target="_blank">
-                    <span class="game-number">54</span>机器人X
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./55-记忆游戏/index.html" target="_blank">
-                    <span class="game-number">55</span>记忆游戏
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./56-卡通糖果- MatCH3/index.html" target="_blank">
-                    <span class="game-number">56</span>卡通糖果- MatCH3
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./57-弹力球/index.html" target="_blank">
-                    <span class="game-number">57</span>弹力球
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./58-跳动弹跳/index.html" target="_blank">
-                    <span class="game-number">58</span>跳动弹跳
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./59-鱼类世界- MatCH3/index.html" target="_blank">
-                    <span class="game-number">59</span>鱼类世界- MatCH3
-                </a>
-            </div>
-            <div class="game-card">
-                <a href="./60-复活节记忆/index.html" target="_blank">
-                    <span class="game-number">60</span>复活节记忆
-                </a>
-            </div>
-        </div>
+        </header>
 
-        <div class="footer">
-            <p>🎮 享受游戏的乐趣，让生活更加精彩！</p>
+        <section class="console">
+            <label class="search">
+                <span class="prompt">SEARCH▸</span>
+                <input id="q" type="text" placeholder="搜游戏名 / 编号…" autocomplete="off" spellcheck="false" aria-label="搜索游戏">
+                <span class="hits"><b id="cnt2">60</b> HITS</span>
+            </label>
+            <div class="chips" id="chips"></div>
+        </section>
+
+        <section class="rack" id="rack"></section>
+        <div class="noresult" id="noresult" hidden>
+            <div class="big">GAME OVER</div>
+            <div class="small">没有匹配的游戏 · 换个关键词再试试</div>
         </div>
+    </main>
+
+    <footer class="ticker" aria-hidden="true">
+        <div class="track" id="track"></div>
+    </footer>
+    <div class="credit">
+        开源汇编 · 收集自互联网公开资源 · <a href="https://github.com/chengzuopeng/game-space" target="_blank" rel="noopener">SOURCE ▸ GITHUB</a>
     </div>
+
+    <div class="toast" id="toast" role="status">⚡ TURBO MODE UNLOCKED ⚡</div>
+
+    <script>
+        // name 为磁盘上目录去掉「序号-」后的原样后缀(56/59 含「- MatCH3」),用于拼真实路径
+        const GAMES = [
+            [1,'僵尸鸭猎手','射击'],[2,'斯瓦特大战僵尸','射击'],[3,'坦克大战','动作'],
+            [4,'木乃伊糖果','益智'],[5,'万圣节记忆','记忆'],[6,'毁灭僵尸','射击'],
+            [7,'粘猴手机游戏','休闲'],[8,'水暖工','益智'],[9,'黄金矿工','休闲'],
+            [10,'逃亡','跑酷'],[11,'水果馅饼','休闲'],[12,'砌砖','益智'],
+            [13,'流浪者大战僵尸','射击'],[14,'万圣节泡泡枪手','射击'],[15,'忍者冒险小游戏','动作'],
+            [16,'赌场卡记忆','记忆'],[17,'吃水果的蛇','休闲'],[18,'坦克防御兵','动作'],
+            [19,'捕鱼狂','休闲'],[20,'疯狂跑步者','跑酷'],[21,'航天飞机','射击'],
+            [22,'超级牛仔跑','跑酷'],[23,'猎鸭者','射击'],[24,'交通赛车','赛车'],
+            [25,'女孩打扮','休闲'],[26,'烛光超线','益智'],[27,'果冻3','消除'],
+            [28,'射击强盗','射击'],[29,'僵尸枪手','射击'],[30,'圣诞熊猫跑步','跑酷'],
+            [31,'速度赛车','赛车'],[32,'圣诞比赛','赛车'],[33,'圣诞气球','休闲'],
+            [34,'儿童真彩色','儿童'],[35,'空战','射击'],[36,'狂鲨任务','动作'],
+            [37,'棍兵','动作'],[38,'泡泡教授','消除'],[39,'忍者游戏','动作'],
+            [40,'糖果比赛3','消除'],[41,'超彩色线','益智'],[42,'触球','休闲'],
+            [43,'快骰子','休闲'],[44,'气球天堂','休闲'],[45,'热珠宝','消除'],
+            [46,'笑脸微笑小游戏','休闲'],[47,'儿童数学游戏','儿童'],[48,'僵尸起义','射击'],
+            [49,'超级目标','射击'],[50,'超级跑车拼图','益智'],[51,'儿童纵横填字游戏','儿童'],
+            [52,'希塔洛契卡','休闲'],[53,'汽车物理学','赛车'],[54,'机器人X','动作'],
+            [55,'记忆游戏','记忆'],[56,'卡通糖果- MatCH3','消除'],[57,'弹力球','休闲'],
+            [58,'跳动弹跳','休闲'],[59,'鱼类世界- MatCH3','消除'],[60,'复活节记忆','记忆']
+        ];
+        const ACCENTS = ['var(--magenta)','var(--cyan)','var(--amber)','var(--lime)'];
+        const CATS = ['全部','射击','动作','益智','消除','赛车','跑酷','记忆','休闲','儿童'];
+        // 这几款自带的是 Construct 2 默认占位图(齿轮/奖章),没有可用美术,回退首字大字卡
+        const NO_ART = new Set([3,50,51,52,53,57,58]);
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const rack = document.getElementById('rack');
+        const noresult = document.getElementById('noresult');
+        const chipsBox = document.getElementById('chips');
+        const input = document.getElementById('q');
+        const cnt = document.getElementById('cnt');
+        const cnt2 = document.getElementById('cnt2');
+
+        const disp = name => name.replace(/-\s+/g,' ').trim();
+        const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+        let state = { q:'', cat:'全部' };
+
+        function cardHTML([n,name,cat], i){
+            const d = disp(name);
+            const a = ACCENTS[(n-1) % ACCENTS.length];
+            const dir = encodeURI(n + '-' + name);
+            const href = './' + dir + '/index.html';
+            const delay = Math.min(i*16, 520);
+            const noArt = NO_ART.has(n);
+            const art = noArt
+                ? `<span class="cab-art"></span>`
+                : `<span class="cab-art"><img src="./${dir}/icon-256.png" alt="" loading="lazy" draggable="false" onerror="this.closest('.cab').classList.add('no-art')"></span>`;
+            return `<a class="cab${noArt?' no-art':''}" style="--a:${a};animation-delay:${delay}ms" href="${href}" target="_blank" rel="noopener">
+                ${art}
+                <span class="cab-scrim" aria-hidden="true"></span>
+                <span class="cab-glyph" aria-hidden="true">${esc(d[0]||'?')}</span>
+                <span class="cab-rank">#${String(n).padStart(2,'0')}</span>
+                <span class="cab-cat">${esc(cat)}</span>
+                <span class="cab-name">${esc(d)}</span>
+                <span class="cab-play">▶ PLAY</span>
+            </a>`;
+        }
+
+        function apply(){
+            const q = state.q.trim().toLowerCase();
+            const list = GAMES.filter(([n,name,cat]) => {
+                const okCat = state.cat === '全部' || cat === state.cat;
+                const okQ = !q || disp(name).toLowerCase().includes(q) || String(n) === q || cat.includes(q);
+                return okCat && okQ;
+            });
+            rack.innerHTML = list.map(cardHTML).join('');
+            rack.hidden = list.length === 0;
+            noresult.hidden = list.length !== 0;
+            cnt.textContent = list.length;
+            cnt2.textContent = list.length;
+        }
+
+        // 分类芯片
+        chipsBox.innerHTML = CATS.map(c => {
+            const num = c === '全部' ? GAMES.length : GAMES.filter(g => g[2] === c).length;
+            return `<button class="chip${c==='全部'?' on':''}" data-cat="${c}">${c}<small>${num}</small></button>`;
+        }).join('');
+        chipsBox.addEventListener('click', e => {
+            const btn = e.target.closest('.chip');
+            if(!btn) return;
+            state.cat = btn.dataset.cat;
+            chipsBox.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === btn));
+            apply();
+        });
+
+        input.addEventListener('input', () => { state.q = input.value; apply(); });
+
+        // 跑马灯:内容复制两份以实现无缝循环
+        const tickerText = ['★ INSERT COIN','<b>60</b> GAMES LOADED','PLAYER ONE READY',
+            'OPEN SOURCE ARCADE','★ HIGH SCORE','READY GO !','CONSTRUCT 2 POWERED','★ CONTINUE ?']
+            .map(t => `<span>${t}</span>`).join('');
+        document.getElementById('track').innerHTML = tickerText + tickerText;
+
+        apply();
+
+        // 卡片 3D 倾斜(委托 + 追踪当前卡,减动画偏好下关闭)
+        if(!reduce){
+            let cur = null;
+            const reset = el => { if(el) el.style.transform = ''; };
+            rack.addEventListener('pointermove', e => {
+                const cab = e.target.closest('.cab');
+                if(cab !== cur){ reset(cur); cur = cab; }
+                if(!cab) return;
+                const r = cab.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width - .5;
+                const py = (e.clientY - r.top) / r.height - .5;
+                cab.style.transform = `translateY(-6px) rotateX(${(-py*7).toFixed(2)}deg) rotateY(${(px*9).toFixed(2)}deg)`;
+            });
+            rack.addEventListener('pointerleave', () => { reset(cur); cur = null; });
+        }
+
+        // Konami 秘籍 → TURBO MODE
+        const KC = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+        const toast = document.getElementById('toast');
+        let ki = 0, toastTimer;
+        addEventListener('keydown', e => {
+            const k = e.key.toLowerCase();
+            ki = (k === KC[ki]) ? ki+1 : (k === KC[0] ? 1 : 0);
+            if(ki === KC.length){
+                ki = 0;
+                document.body.classList.toggle('turbo');
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+            }
+        });
+    </script>
 </body>
 </html>
