@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://games.stable-learn.com/sitemap.xml
